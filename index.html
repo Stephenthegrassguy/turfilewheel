@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turfile Orbit</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --orbit-size: min(82vmin, 520px);
+      --logo-size: min(30vmin, 210px);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    main {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      padding: 3rem 1rem;
+    }
+
+    .scene {
+      position: relative;
+      width: var(--orbit-size);
+      aspect-ratio: 1/1;
+      display: grid;
+      place-items: center;
+    }
+
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: 12%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(17, 24, 39, 0.12), rgba(17, 24, 39, 0) 65%);
+      filter: blur(18px);
+      opacity: 0.6;
+    }
+
+    .logo {
+      z-index: 2;
+      width: var(--logo-size);
+      aspect-ratio: 1/1;
+      display: grid;
+      place-items: center;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .orbit {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: var(--orbit-size);
+      height: var(--orbit-size);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      animation: spin 28s linear infinite;
+    }
+
+    .orbit::before {
+      content: "";
+      position: absolute;
+      inset: 8%;
+      border-radius: 50%;
+      border: 2px dashed rgba(17, 24, 39, 0.08);
+    }
+
+    .icon {
+      --position: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 82px;
+      height: 82px;
+      margin: -41px;
+      display: grid;
+      place-items: center;
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.78));
+      box-shadow:
+        0 0 28px rgba(110, 231, 183, 0.3),
+        0 12px 32px rgba(15, 23, 42, 0.55),
+        inset 0 0 18px rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      transform: rotate(calc(var(--position) * 45deg))
+        translateY(calc(-0.5 * var(--orbit-size)))
+        rotate(calc(var(--position) * -45deg));
+      transition: transform 1.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+      animation: glowPulse 8s ease-in-out infinite;
+      animation-delay: calc(var(--position) * -0.35s);
+    }
+
+    .icon img {
+      width: 62%;
+      height: 62%;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+      transform: scale(1);
+      transition: transform 0.8s ease, filter 0.8s ease;
+      animation: spin 28s linear infinite reverse;
+      will-change: transform;
+    }
+
+    .icon.is-pop {
+      opacity: 0.75;
+    }
+
+    .icon.is-pop img {
+      transform: scale(1.12);
+      filter: drop-shadow(0 0 18px rgba(110, 231, 183, 0.65));
+    }
+
+    header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 0.75rem 0 0;
+      opacity: 0.7;
+      letter-spacing: 0.04em;
+      max-width: 38ch;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 18px rgba(110, 231, 183, 0.35),
+          0 12px 30px rgba(8, 13, 32, 0.45),
+          inset 0 0 18px rgba(255, 255, 255, 0.04);
+      }
+      50% {
+        box-shadow:
+          0 0 32px rgba(110, 231, 183, 0.6),
+          0 16px 34px rgba(8, 13, 32, 0.6),
+          inset 0 0 24px rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .icon {
+        width: 64px;
+        height: 64px;
+        margin: -32px;
+      }
+
+      .icon img {
+        width: 70%;
+        height: 70%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="scene" role="presentation">
+      <div class="logo">
+        <img src="assets/turfilelogo.svg" alt="Turfile logo" />
+      </div>
+      <div class="orbit" aria-hidden="true">
+        <div class="icon">
+          <img src="assets/eaarth.svg" alt="Planetary stewardship icon" />
+        </div>
+        <div class="icon">
+          <img src="assets/tree.svg" alt="Forest canopy icon" />
+        </div>
+        <div class="icon">
+          <img src="assets/turtle.svg" alt="Resilient turtle icon" />
+        </div>
+        <div class="icon">
+          <img src="assets/map.svg" alt="Mapping connectivity icon" />
+        </div>
+        <div class="icon">
+          <img src="assets/palmtree.svg" alt="Tropical sustainability icon" />
+        </div>
+        <div class="icon">
+          <img src="assets/rabbit.svg" alt="Adaptive speed icon" />
+        </div>
+        <div class="icon">
+          <img src="assets/water.svg" alt="Water conservation icon" />
+        </div>
+        <div class="icon">
+          <img src="assets/satellite.svg" alt="Satellite insight icon" />
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const orbitIcons = Array.from(document.querySelectorAll('.icon'));
+    const totalPositions = orbitIcons.length;
+    const basePositions = Array.from({ length: totalPositions }, (_, i) => i);
+
+    const shuffle = (arr) => {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    };
+
+    let currentOrder = basePositions.slice();
+
+    const applyOrder = (order) => {
+      orbitIcons.forEach((icon, idx) => {
+        icon.style.setProperty('--position', order[idx]);
+        icon.classList.add('is-pop');
+        setTimeout(() => icon.classList.remove('is-pop'), 900);
+      });
+    };
+
+    const reshuffle = () => {
+      let nextOrder = shuffle(basePositions);
+      if (nextOrder.every((value, idx) => value === currentOrder[idx])) {
+        const a = Math.floor(Math.random() * totalPositions);
+        const b = (a + Math.floor(totalPositions / 2)) % totalPositions;
+        [nextOrder[a], nextOrder[b]] = [nextOrder[b], nextOrder[a]];
+      }
+      currentOrder = nextOrder;
+      applyOrder(currentOrder);
+    };
+
+    const scheduleReshuffle = () => {
+      const delay = 4600 + Math.random() * 2400;
+      setTimeout(() => {
+        reshuffle();
+        scheduleReshuffle();
+      }, delay);
+    };
+
+    applyOrder(currentOrder);
+    setTimeout(() => {
+      reshuffle();
+      scheduleReshuffle();
+    }, 2200);
+  </script>
+</body>
+</html>

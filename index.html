@@ -3,28 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light"> <!-- prevent dark UA bg -->
   <title>Turfile Orbit</title>
   <style>
     :root {
-      color-scheme: light dark;
       --orbit-size: min(82vmin, 520px);
       --logo-size: min(30vmin, 210px);
       font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
     }
 
-    html {
-      background: transparent;
-      background-color: transparent;
-    }
-
-    body {
+    html, body {
       margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: transparent;
-      background-color: transparent;
-      color: #111827;
+      height: 100%;
+      background: transparent !important;
     }
 
     main {
@@ -43,6 +34,7 @@
       place-items: center;
     }
 
+    /* 🔹 remove or tweak this if you don’t want the glowing haze */
     .scene::before {
       content: "";
       position: absolute;
@@ -79,6 +71,7 @@
       animation: spin 28s linear infinite;
     }
 
+    /* 🔹 dashed orbit ring, safe to remove if you want nothing behind */
     .orbit::before {
       content: "";
       position: absolute;
@@ -117,38 +110,13 @@
       height: 62%;
       object-fit: contain;
       filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
-      transform: scale(1);
-      transition: transform 0.8s ease, filter 0.8s ease;
       animation: spin 28s linear infinite reverse;
-      will-change: transform;
     }
 
-    .icon.is-pop {
-      opacity: 0.75;
-    }
-
+    .icon.is-pop { opacity: 0.75; }
     .icon.is-pop img {
       transform: scale(1.12);
       filter: drop-shadow(0 0 18px rgba(110, 231, 183, 0.65));
-    }
-
-    header {
-      margin-bottom: 3rem;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    p {
-      margin: 0.75rem 0 0;
-      opacity: 0.7;
-      letter-spacing: 0.04em;
-      max-width: 38ch;
     }
 
     @keyframes glowPulse {
@@ -173,15 +141,9 @@
 
     @media (max-width: 600px) {
       .icon {
-        width: 64px;
-        height: 64px;
-        margin: -32px;
+        width: 64px; height: 64px; margin: -32px;
       }
-
-      .icon img {
-        width: 70%;
-        height: 70%;
-      }
+      .icon img { width: 70%; height: 70%; }
     }
   </style>
 </head>
@@ -192,40 +154,25 @@
         <img src="assets/turfilelogo.svg" alt="Turfile logo" />
       </div>
       <div class="orbit" aria-hidden="true">
-        <div class="icon">
-          <img src="assets/eaarth.svg" alt="Planetary stewardship icon" />
-        </div>
-        <div class="icon">
-          <img src="assets/tree.svg" alt="Forest canopy icon" />
-        </div>
-        <div class="icon">
-          <img src="assets/turtle.svg" alt="Resilient turtle icon" />
-        </div>
-        <div class="icon">
-          <img src="assets/map.svg" alt="Mapping connectivity icon" />
-        </div>
-        <div class="icon">
-          <img src="assets/palmtree.svg" alt="Tropical sustainability icon" />
-        </div>
-        <div class="icon">
-          <img src="assets/rabbit.svg" alt="Adaptive speed icon" />
-        </div>
-        <div class="icon">
-          <img src="assets/water.svg" alt="Water conservation icon" />
-        </div>
-        <div class="icon">
-          <img src="assets/satellite.svg" alt="Satellite insight icon" />
-        </div>
+        <div class="icon"><img src="assets/eaarth.svg" alt="Planet icon" /></div>
+        <div class="icon"><img src="assets/tree.svg" alt="Tree icon" /></div>
+        <div class="icon"><img src="assets/turtle.svg" alt="Turtle icon" /></div>
+        <div class="icon"><img src="assets/map.svg" alt="Map icon" /></div>
+        <div class="icon"><img src="assets/palmtree.svg" alt="Palm tree icon" /></div>
+        <div class="icon"><img src="assets/rabbit.svg" alt="Rabbit icon" /></div>
+        <div class="icon"><img src="assets/water.svg" alt="Water icon" /></div>
+        <div class="icon"><img src="assets/satellite.svg" alt="Satellite icon" /></div>
       </div>
     </div>
   </main>
 
   <script>
     const orbitIcons = Array.from(document.querySelectorAll('.icon'));
-    const totalPositions = orbitIcons.length;
-    const basePositions = Array.from({ length: totalPositions }, (_, i) => i);
+    const total = orbitIcons.length;
+    const positions = [...Array(total).keys()];
+    let current = positions.slice();
 
-    const shuffle = (arr) => {
+    const shuffle = arr => {
       const copy = arr.slice();
       for (let i = copy.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -234,9 +181,7 @@
       return copy;
     };
 
-    let currentOrder = basePositions.slice();
-
-    const applyOrder = (order) => {
+    const applyOrder = order => {
       orbitIcons.forEach((icon, idx) => {
         icon.style.setProperty('--position', order[idx]);
         icon.classList.add('is-pop');
@@ -245,29 +190,23 @@
     };
 
     const reshuffle = () => {
-      let nextOrder = shuffle(basePositions);
-      if (nextOrder.every((value, idx) => value === currentOrder[idx])) {
-        const a = Math.floor(Math.random() * totalPositions);
-        const b = (a + Math.floor(totalPositions / 2)) % totalPositions;
-        [nextOrder[a], nextOrder[b]] = [nextOrder[b], nextOrder[a]];
+      let next = shuffle(positions);
+      if (next.every((v, i) => v === current[i])) {
+        const a = Math.floor(Math.random() * total);
+        const b = (a + Math.floor(total / 2)) % total;
+        [next[a], next[b]] = [next[b], next[a]];
       }
-      currentOrder = nextOrder;
-      applyOrder(currentOrder);
+      current = next;
+      applyOrder(current);
     };
 
-    const scheduleReshuffle = () => {
+    const schedule = () => {
       const delay = 4600 + Math.random() * 2400;
-      setTimeout(() => {
-        reshuffle();
-        scheduleReshuffle();
-      }, delay);
+      setTimeout(() => { reshuffle(); schedule(); }, delay);
     };
 
-    applyOrder(currentOrder);
-    setTimeout(() => {
-      reshuffle();
-      scheduleReshuffle();
-    }, 2200);
+    applyOrder(current);
+    setTimeout(() => { reshuffle(); schedule(); }, 2200);
   </script>
 </body>
 </html>
